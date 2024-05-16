@@ -12,18 +12,21 @@ export const getUsers = async (req: Request, res: Response): Promise<void> => {
 };
 
 //GET: seach user by username
-export const getUserByUsername = (req: Request, res: Response): void => {
-  // const { username } = req.params;
-  // const userFilter = users.filter((user: User) =>
-  //   user.username.includes(username)
-  // );
-  // if (userFilter.length === 0) {
-  //   res.status(404).json({ status: 404, message: "User not found" });
-  //   return;
-  // }
-  // res
-  //   .status(200)
-  // .json({ status: 200, data: userFilter, message: "Search user success!" });
+export const searchByUsername = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  const { username } = req.params;
+  const userFilter = await User.find({
+    username: { $regex: username, $options: "i" },
+  });
+  if (userFilter.length === 0) {
+    res.status(404).json({ status: 404, message: "User not found" });
+    return;
+  }
+  res
+    .status(200)
+    .json({ status: 200, data: userFilter, message: "Search user success!" });
 };
 
 //POST: create new user
