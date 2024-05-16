@@ -16,7 +16,7 @@ export const searchByUsername = async (
   req: Request,
   res: Response
 ): Promise<void> => {
-  const { username } = req.params;
+  const { username } = req.query;
   const userFilter = await User.find({
     username: { $regex: username, $options: "i" },
   });
@@ -55,7 +55,7 @@ export const updateUser = async (
   req: Request,
   res: Response
 ): Promise<void> => {
-  const { username } = req.params;
+  const { username } = req.query;
   const userInfo: IUser = req.body;
   const user = await User.findOne({ username });
 
@@ -63,6 +63,15 @@ export const updateUser = async (
     res.status(404).json({ status: 404, message: "User not found" });
     return;
   }
+
+  const checkDuplicatedUsername = await User.findOne({
+    username: userInfo.username,
+  });
+  if (checkDuplicatedUsername) {
+    res.status(409).json({ status: 409, message: "User already exists !" });
+    return;
+  }
+
   const updatedUser = await User.findOneAndUpdate({ username }, userInfo, {
     new: true,
   });
@@ -76,7 +85,7 @@ export const deleteUser = async (
   req: Request,
   res: Response
 ): Promise<void> => {
-  const { username } = req.params;
+  const { username } = req.query;
   const user = await User.findOne({ username });
 
   if (!user) {
