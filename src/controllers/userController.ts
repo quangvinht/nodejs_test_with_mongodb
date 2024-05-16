@@ -72,16 +72,19 @@ export const updateUser = async (
 };
 
 //DELETE: delete user
-export const deleteUser = (req: Request, res: Response): void => {
-  // const { username } = req.params;
-  // const updatedUsers = users.filter((user: User) => user.username !== username);
-  // const userDeleted = users.find((user: User) => user.username === username);
-  // if (!userDeleted) {
-  //   res.status(404).json({ status: 404, message: "User not found" });
-  //   return;
-  // }
-  // users = updatedUsers;
-  // res
-  //   .status(200)
-  //   .json({ status: 200, message: "Delete user success!", data: userDeleted });
+export const deleteUser = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  const { username } = req.params;
+  const user = await User.findOne({ username });
+
+  if (!user) {
+    res.status(404).json({ status: 404, message: "User not found" });
+    return;
+  }
+  const userDeleted = await User.findOneAndDelete({ username }, { new: true });
+  res
+    .status(200)
+    .json({ status: 200, message: "Delete user success!", data: userDeleted });
 };
