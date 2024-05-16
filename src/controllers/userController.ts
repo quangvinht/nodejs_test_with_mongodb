@@ -68,7 +68,7 @@ export const updateUser = async (
     username: userInfo.username,
   });
   if (checkDuplicatedUsername) {
-    res.status(409).json({ status: 409, message: "User already exists !" });
+    res.status(409).json({ status: 409, message: "Username already exists !" });
     return;
   }
 
