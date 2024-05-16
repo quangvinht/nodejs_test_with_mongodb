@@ -30,20 +30,20 @@ export const createUser = async (
   req: Request,
   res: Response
 ): Promise<void> => {
-  const newUser: IUser = req.body;
-  const user = await User.findOne({ username: newUser.username });
+  const newUserInfo: IUser = req.body;
+  const user = await User.findOne({ username: newUserInfo.username });
   if (user) {
     res.status(409).json({ status: 409, message: "User already exists !" });
     return;
   }
-  const savedUser = await newUser.save();
-  res
-    .status(201)
-    .json({
-      status: 201,
-      data: savedUser,
-      message: "Create new user success!",
-    });
+  const savedUser = await User.create(newUserInfo);
+  await savedUser.save();
+
+  res.status(201).json({
+    status: 201,
+    data: savedUser,
+    message: "Create new user success!",
+  });
 };
 
 //PATCH: update user
