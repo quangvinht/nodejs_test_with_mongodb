@@ -4,10 +4,11 @@ import User, { IUser } from "../models/user";
 // let users: User[] = [];
 
 //GET: all user
-export const getUsers = (req: Request, res: Response): void => {
-  // res
-  //   .status(200)
-  //   .json({ status: 200, data: users, message: "Get all user success!" });
+export const getUsers = async (req: Request, res: Response): Promise<void> => {
+  const users = await User.find({});
+  res
+    .status(200)
+    .json({ status: 200, data: users, message: "Get all user success!" });
 };
 
 //GET: seach user by username
