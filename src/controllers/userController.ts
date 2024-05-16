@@ -51,23 +51,24 @@ export const createUser = async (
 };
 
 //PATCH: update user
-export const updateUser = (req: Request, res: Response): void => {
-  // const { username } = req.params;
-  // const userInfo: User = req.body;
-  // const userIndex = users.findIndex((user: User) => user.username === username);
-  // if (userIndex === -1) {
-  //   res.status(404).json({ status: 404, message: "User not found" });
-  //   return;
-  // }
-  // users[userIndex] = {
-  //   ...users[userIndex],
-  //   ...userInfo,
-  // };
-  // res.status(200).json({
-  //   status: 200,
-  //   data: users[userIndex],
-  //   message: "Update user success!",
-  // });
+export const updateUser = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  const { username } = req.params;
+  const userInfo: IUser = req.body;
+  const user = await User.findOne({ username });
+
+  if (!user) {
+    res.status(404).json({ status: 404, message: "User not found" });
+    return;
+  }
+  const updatedUser = await User.findOneAndUpdate({ username }, userInfo, {
+    new: true,
+  });
+  res
+    .status(200)
+    .json({ status: 200, data: updatedUser, message: "Update user success!" });
 };
 
 //DELETE: delete user
